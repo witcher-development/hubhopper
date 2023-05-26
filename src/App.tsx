@@ -33,8 +33,7 @@ function App() {
 
   return (
     <div>
-      <button className='hamburger' onClick={() => setModal(m => !m)}>[]</button>
-      <TopBar select="source" destination_hub="Hubby hub" />
+      <Rides />
       <Map hubs={data.status === "success" ? data.data : []} />
       {/*<RouterProvider router={router} />*/}
     </div>
