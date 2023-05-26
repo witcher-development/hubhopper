@@ -1,17 +1,24 @@
-import { useEffect, useRef } from "react";
-import {MapContainer, Marker, Popup, TileLayer, useMap} from "react-leaflet";
+import { useState, useEffect, PropsWithChildren } from "react";
 import * as L from "leaflet";
-import { v4 as uuid } from 'uuid'
-import AppendHead from 'react-append-head';
-import { Map as MapBox, AnyLayer } from 'mapbox-gl';
-import 'mapbox-gl/dist/mapbox-gl.css';
+import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
+// import { v4 as uuid } from 'uuid'
+import hubIcon$ from '../../assets/hub.svg'
 
+const hubIcon = L.icon({
+  iconUrl: hubIcon$,
+  iconSize: [20, 20],
+  iconAnchor: [10, 10],
+  // popupAnchor: [-3, -76],
+  // shadowUrl: 'my-icon-shadow.png',
+  // shadowSize: [68, 95],
+  // shadowAnchor: [22, 94]
+});
 
 const getLocation = (): Promise<Loc> => {
   return new Promise((resolve, reject) => {
     navigator.geolocation.getCurrentPosition(
       (position) => {
-          const loc: Loc = [position.coords.longitude, position.coords.latitude];
+          const loc: Loc = [position.coords.latitude, position.coords.longitude];
           resolve(loc);
         },
     (error) => {
@@ -32,54 +39,33 @@ type Props = {
   cars?: null[]
 }
 
-const getHubConfig = ({ loc }: Hub) => ({
-  id: uuid(),
-  type: 'circle',
-  source: {
-    type: 'geojson',
-    data: {
-      type: 'FeatureCollection',
-      features: [
-        {
-          type: 'Feature',
-          geometry: {
-            type: 'Point',
-            coordinates: [loc[0], loc[1]]
-          }
-        }
-      ]
+export const Map = (props: Props) => {
+  return (
+    <MapContainer center={[0, 0]} zoom={13}>
+      <TileLayer
+        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+      />
+      <MapContent {...props} />
+    </MapContainer>
+  )
+}
+
+const MapContent = ({ hubs }: Props) => {
+  const map = useMap();
+  const [currentLocation, setLocation] = useState<Loc>([0, 0])
+
+  useEffect(() => {
+    const asyncWrapper = async () => {
+      const location = await getLocation();
+      setLocation(location)
+      map.setView({ lat: location[0], lng: location[1]})
     }
-  },
-  paint: {
-    'circle-radius': 6, // Adjust the radius of the circle
-    'circle-color': '#FF0000' // Specify the color of the circle
-  }
-})
-
-export const Map = ({ hubs, cars }: Props) => {
-  const map = useRef<L.Map | null>();
-
-  // useEffect(() => {
-  //   const asyncWrapper = async () => {
-  //     // await getLocation()
-  //     map.current = L.map('map').setView([51.505, -0.09], 13);
-  //     // map.current = new MapBox({
-  //     //   container: 'map',
-  //     //   style: 'mapbox://styles/mapbox/streets-v12',
-  //     //   center: await getLocation(),
-  //     //   zoom: 11,
-  //     //   accessToken: 'pk.eyJ1IjoibHN0dW1hIiwiYSI6ImNsaTN0dnc3ZDBpMTkzZW1seml3NTZobDUifQ._Fo8j6VzHhLj-BDC5EW_xg'
-  //     // })
-  //     // map.current?.addLayer()
-  //     const tiles = L.tileLayer('https://{s}.tile.openstreetmap.de/{z}/{x}/{y}.png', {
-  //       maxZoom: 19,
-  //       attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-  //     });
-  //     tiles.addTo(map.current)
-  //     console.log(map.current)
-  //   }
-  //   asyncWrapper()
-  // }, [])
+    asyncWrapper()
+  }, [])
+  useEffect(() => {
+    console.log('center', map.getCenter())
+  }, [location])
 
   // useEffect(() => {
   //   if (!map.current) return;
@@ -100,86 +86,15 @@ export const Map = ({ hubs, cars }: Props) => {
   //
   // }, [hubs, cars])
 
-  // if (m)
+  console.log(map)
 
-
-//   useEffect(() => {
-//     const func = async () => {
-{/*    const loc = await get_location();*/}
-
-{/*    // Render map*/}
-
-{/*    map.on("load", () => {*/}
-{/*      map.addLayer({*/}
-{/*        id: 'a',*/}
-{/*        type: ''*/}
-//       })
-//       map.loadImage(
-{/*          "https://docs.mapbox.com/mapbox-gl-js/assets/cat.png",*/}
-{/*          (error, image)  => {*/}
-{/*              if (error) throw error;*/}
-{/*              map.addImage('circle', image);*/}
-{/*          }*/}
-{/*      )*/}
-
-{/*        fetch("http://localhost:80/get_hubs/").then((r)=>{r.json().then((j)=>{*/}
-{/*            j = JSON.parse(j)*/}
-{/*            for (let i = 0; i < j.length; i++) {*/}
-{/*                const element = j[i]*/}
-//                 console.warn(element)
-//                 map.addSource(element["pk"], {
-{/*                    'type': 'geojson',*/}
-{/*                    'data': {*/}
-{/*                        'type': 'FeatureCollection',*/}
-{/*                        'features': [*/}
-{/*                            {*/}
-{/*                                'type': 'Feature',*/}
-{/*                                'geometry': {*/}
-{/*                                    'type': 'Point',*/}
-{/*                                    'coordinates': [element["fields"]["longitude"], element["fields"]["latitude"]],*/}
-//                                 }
-{/*                            }*/}
-{/*                        ]*/}
-{/*                    }*/}
-//                 });
-//
-//                 // Add a layer to use the image to represent the data.
-//                 map.addLayer({
-//                     'id': element["pk"],
-//                     'type': 'symbol',
-//                     'source': element["pk"], // reference the data source
-//                     'layout': {
-{/*                        'icon-image': 'circle', // reference the image*/}
-//                         'icon-size': 0.2
-//                     }
-//                 });
-//             }
-//         })})
-// })
-// };
-//
-// func();
-// }, []);
   return (
-      <div>
-        {/*<div id="map"></div>*/}
+    <div>
+      {hubs?.map(({ loc }) => (
+        <Marker key={loc} position={new L.LatLng(loc[0], loc[1])} icon={hubIcon}>
 
-        <MapContainer center={[51.505, -0.09]} zoom={13} scrollWheelZoom={false}>
-          <TileLayer
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
-          />
-          <Marker position={[51.505, -0.09]}>
-            <Popup>
-              A pretty CSS3 popup. <br /> Easily customizable.
-            </Popup>
-          </Marker>
-        </MapContainer>
-          {/*<div id="map"></div>*/}
-          {/*<AppendHead>*/}
-          {/*    <link href='https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css' rel='stylesheet' />*/}
-          {/*    <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js" defer></script>*/}
-          {/*</AppendHead>*/}
-      </div>
+        </Marker>
+      ))}
+    </div>
   )
 }
