@@ -32,7 +32,7 @@ function App() {
   return (
     <div>
       <button className='hamburger' onClick={() => setModal(m => !m)}>[]</button>
-      <TopBar select="source" destination_hub="Hubby hub" />
+      <Rides />
       <Map />
     </div>
   )
