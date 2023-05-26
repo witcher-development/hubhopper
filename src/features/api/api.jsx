@@ -19,6 +19,16 @@ export async function post(path, body) {
     });
     return await request.json()
 }
+export async function get(path) {
+    let request = await fetch("https://api.hubhopper.app"+path, {
+        method: "GET",
+        headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            "Authorization": authorize(email, password)
+        }
+    });
+    return await request.json()
+}
 
 export async function find_rides(destination_hub_id, source_hub_id) {
     return await post('/find-rides/', {'destination_hub_id':destination_hub_id, 'source_hub_id':source_hub_id})
@@ -38,3 +48,7 @@ export async function cancel_ride(ride_id) {
 export async function finish_ride(ride_id) {
     return await post('/request-join-ride/', {'ride_id':ride_id})
 }
+export async function update() {
+    return await post('/update/')
+}
+
