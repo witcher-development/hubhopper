@@ -32,3 +32,9 @@ export async function join_request(ride_id, source_hub_id) {
 export async function accept_join_request(ride_id, passenger_id) {
     return await post('/request-join-ride/', {'ride_id':ride_id, 'passenger_id':passenger_id})
 }
+export async function cancel_ride(ride_id) {
+    return await post('/request-join-ride/', {'ride_id':ride_id})
+}
+export async function finish_ride(ride_id) {
+    return await post('/request-join-ride/', {'ride_id':ride_id})
+}
