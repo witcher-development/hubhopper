@@ -8,30 +8,23 @@ import axios from "axios";
 
 import './App.css'
 import {Map} from "./features/map/Map";
+import {TopBar} from "./features/topbar/TopBar";
+import {Rides} from "./pages/Rides";
+
 import {get_hubs} from "./features/api/api";
 
-// const router = createBrowserRouter([
-//   {
-//     path: "/",
-//     element: <FlowManager />,
-//   },
-//   {
-//     path: "/welcome",
-//     element: <Welcome />,
-//   },
-// ]);
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Rides />
+  }
+]);
 
 function App() {
   const [modal, setModal] = useState(false);
 
   const data = useQuery('hubs', get_hubs)
   console.log(data)
-
-  useEffect(() => {
-    if (!localStorage.getItem('mode')) {
-      router.navigate('/welcome')
-    }
-  }, [])
 
   const setMode = (mode: 'driver' | 'passenger') => {
     localStorage.setItem('mode', mode)
@@ -41,12 +34,7 @@ function App() {
   return (
     <div>
       <button className='hamburger' onClick={() => setModal(m => !m)}>[]</button>
-      {modal && (
-        <div className='modal'>
-          <button onClick={() => setMode('driver')}>Driver</button>
-          <button onClick={() => setMode('passenger')}>Passenger</button>
-        </div>
-      )}
+      <TopBar select="source" destination_hub="Hubby hub" />
       <Map hubs={data.status === "success" ? data.data : []} />
       {/*<RouterProvider router={router} />*/}
     </div>

@@ -52,6 +52,6 @@ export async function finish_ride(ride_id) {
     return await post('/request-join-ride/', {'ride_id':ride_id})
 }
 export async function update() {
-    return await post('/update/')
+    return await get('/update/')
 }
 
