@@ -62,12 +62,16 @@
   height: 100vh;
 }
 
+
+/*
+// TopBar (source & destination selection)
+*/
 #topbar {
   position: absolute;
   top: 0;
   left: 0;
   width: 100vw;
-  height: 52vw;
+  height: 42vw;
   background-color: white;
   opacity: 96%;
   z-index: 2;
@@ -128,7 +132,20 @@
   left: 52px;
   top: 103.5px;
 }
-
+textarea:focus, input:focus{outline: none;}
+#topbar-select-source {}
+#topbar-select-source #source-img-arrow {}
+/*
+// RideSelection
+*/
+#rs-topbar {
+  position: absolute;
+  width: 390px;
+  height: 138px;
+  left: 0px;
+  top: 0px;
+  z-index: 5;
+}
 textarea:focus, input:focus{
   outline: none;
 }
@@ -138,4 +155,8 @@ textarea:focus, input:focus{
 }
 #topbar-select-source #source-img-arrow {
 
+}
+#rs-topbar {
+  background: #D3E0C3;
+  border-radius: 0px 0px 10px 10px;
 }
