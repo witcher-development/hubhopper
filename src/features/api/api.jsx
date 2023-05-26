@@ -1,5 +1,5 @@
-var email;
-var password;
+var email = 'pamerighiqa@europa.eu';
+var password = 'password';
 
 function authorize(email, password)
 {
@@ -30,6 +30,9 @@ export async function get(path) {
     return await request.json()
 }
 
+export async function get_hubs() {
+    return JSON.parse(await get('/get_hubs/')).map(data => ({ loc: [data.fields.latitude, data.fields.longitude] }))
+}
 export async function find_rides(destination_hub_id, source_hub_id) {
     return await post('/find-rides/', {'destination_hub_id':destination_hub_id, 'source_hub_id':source_hub_id})
 }

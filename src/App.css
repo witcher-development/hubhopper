@@ -56,5 +56,86 @@
   background-color: #fff;
 }
 
-#map { position: absolute; justify-self: center; margin: auto; top: 0; bottom: 0; width: 100vw; height: 80vh; }
+#map { height: 500px; }
+.leaflet-container {
+  width: 100vw;
+  height: 100vh;
+}
 
+#topbar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 52vw;
+  background-color: white;
+  opacity: 96%;
+  z-index: 2;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.05);
+  border-radius: 0px 0px 10px 10px;
+}
+
+#topbar #destination-search, #topbar #source-destinfo {
+  position: absolute;
+  width: 71px;
+  height: 30px;
+  left: 39px;
+  top: 55px;
+  font-family: 'Blinker';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 25px;
+  line-height: 30px;
+  color: #000000;
+}
+#topbar #source-destinfo {
+  position: absolute;
+  height: 41px;
+  width: 100%;
+  left: 57px;
+  top: 50px;
+
+  font-family: 'Blinker';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 18px;
+
+  color: #000000;
+
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+}
+#topbar #source-destinfo span { text-align: left;}
+#topbar #source-backbtn { position: absolute; top: 50px; left: 20px; color: black; height: 2em; width: auto; border-radius: 100em; transition: 0.2s; }
+#topbar #source-backbtn:hover { background-color: #00000022; }
+#topbar #destination-input, #topbar #source-input {
+  border: 0;
+  padding: 0.1em 1em 0.1em 3em;
+  color: blacK;
+  position: absolute;
+  width: 296px;
+  height: 34px;
+  left: 39px;
+  top: 94px;
+
+  background: #E9E9E9;
+  border-radius: 40px;
+}
+#topbar #destination-img-location, #topbar #source-img-lens {
+  z-index: 4;
+  position: absolute;
+  left: 52px;
+  top: 103.5px;
+}
+
+textarea:focus, input:focus{
+  outline: none;
+}
+
+#topbar-select-source {
+
+}
+#topbar-select-source #source-img-arrow {
+
+}
