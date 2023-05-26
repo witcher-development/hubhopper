@@ -23,3 +23,12 @@ export async function post(path, body) {
 export async function find_rides(destination_hub_id, source_hub_id) {
     return await post('/find-rides/', {'destination_hub_id':destination_hub_id, 'source_hub_id':source_hub_id})
 }
+export async function create_ride(destination_hub_id, source_hub_id) {
+    return await post('/create-ride/', {'destination_hub_id':destination_hub_id, 'source_hub_id':source_hub_id})
+}
+export async function join_request(ride_id, source_hub_id) {
+    return await post('/request-join-ride/', {'ride_id':ride_id, 'passenger_hub_id':source_hub_id})
+}
+export async function accept_join_request(ride_id, passenger_id) {
+    return await post('/request-join-ride/', {'ride_id':ride_id, 'passenger_id':passenger_id})
+}

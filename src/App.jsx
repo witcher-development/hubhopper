@@ -1,54 +1,29 @@
 import { useState, useEffect } from "react";
-import {
-  createBrowserRouter,
-  RouterProvider,
-} from "react-router-dom";
-
-import { Welcome } from "./features/welcome";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 import './App.css'
-import {FlowManager} from "./features/flowManager/FlowManager";
 
 var username;
 var password;
 
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <FlowManager />,
-  },
-  {
-    path: "/welcome",
-    element: <Welcome />,
-  },
-]);
 
 function App() {
-  const [modal, setModal] = useState(false);
-
-  useEffect(() => {
-    if (!localStorage.getItem('mode')) {
-      router.navigate('/welcome')
-    }
-  }, [])
-
-  const setMode = (mode: 'driver' | 'passenger') => {
-    localStorage.setItem('mode', mode)
-    router.navigate(0)
-  }
-
   return (
-    <div>
-      <button className='hamburger' onClick={() => setModal(m => !m)}>[]</button>
-      {modal && (
-        <div className='modal'>
-          <button onClick={() => setMode('driver')}>Driver</button>
-          <button onClick={() => setMode('passenger')}>Passenger</button>
-        </div>
-      )}
-      <RouterProvider router={router} />
-    </div>
-  )
+    <Router>
+      <div className="container">
+        <Routes>
+          <Route path='/' exact element={<></>}/>
+        </Routes>
+        <Routes>
+          <Route path='/a/' exact element={<></>}/>
+        </Routes>
+        <Routes>
+          <Route path='/b/' element={<></>}/>
+        </Routes>
+      </div>
+    </Router>
+  );
 }
+
 
 export default App
