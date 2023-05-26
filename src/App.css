@@ -56,5 +56,10 @@
   background-color: #fff;
 }
 
-#map { position: absolute; justify-self: center; margin: auto; top: 0; bottom: 0; width: 100vw; height: 80vh; }
+#map { height: 500px; }
+.leaflet-container {
+  width: 100vw;
+  height: 100vh;
+}
+/*#map { position: absolute; justify-self: center; margin: auto; top: 0; bottom: 0; width: 100vw; height: 80vh; }*/
 

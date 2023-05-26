@@ -1,7 +1,9 @@
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
+import {MapContainer, Marker, Popup, TileLayer, useMap} from "react-leaflet";
+import * as L from "leaflet";
 import { v4 as uuid } from 'uuid'
 import AppendHead from 'react-append-head';
-import { LngLat, LngLatLike, Map as MapBox, AnyLayer } from 'mapbox-gl';
+import { Map as MapBox, AnyLayer } from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
 
@@ -9,7 +11,7 @@ const getLocation = (): Promise<Loc> => {
   return new Promise((resolve, reject) => {
     navigator.geolocation.getCurrentPosition(
       (position) => {
-          const loc = [position.coords.longitude, position.coords.latitude];
+          const loc: Loc = [position.coords.longitude, position.coords.latitude];
           resolve(loc);
         },
     (error) => {
@@ -52,39 +54,51 @@ const getHubConfig = ({ loc }: Hub) => ({
     'circle-radius': 6, // Adjust the radius of the circle
     'circle-color': '#FF0000' // Specify the color of the circle
   }
-} as AnyLayer)
+})
 
 export const Map = ({ hubs, cars }: Props) => {
-  const map = useRef<MapBox | null>(null);
+  const map = useRef<L.Map | null>();
 
-  useEffect(() => {
-    const asyncWrapper = async () => {
-      map.current = new MapBox({
-        container: 'map',
-        style: 'mapbox://styles/mapbox/streets-v12',
-        center: await getLocation(),
-        zoom: 11,
-        accessToken: 'pk.eyJ1IjoibHN0dW1hIiwiYSI6ImNsaTN0dnc3ZDBpMTkzZW1seml3NTZobDUifQ._Fo8j6VzHhLj-BDC5EW_xg'
-      })
-      console.log(map.current)
-    }
-    asyncWrapper()
-  }, [])
+  // useEffect(() => {
+  //   const asyncWrapper = async () => {
+  //     // await getLocation()
+  //     map.current = L.map('map').setView([51.505, -0.09], 13);
+  //     // map.current = new MapBox({
+  //     //   container: 'map',
+  //     //   style: 'mapbox://styles/mapbox/streets-v12',
+  //     //   center: await getLocation(),
+  //     //   zoom: 11,
+  //     //   accessToken: 'pk.eyJ1IjoibHN0dW1hIiwiYSI6ImNsaTN0dnc3ZDBpMTkzZW1seml3NTZobDUifQ._Fo8j6VzHhLj-BDC5EW_xg'
+  //     // })
+  //     // map.current?.addLayer()
+  //     const tiles = L.tileLayer('https://{s}.tile.openstreetmap.de/{z}/{x}/{y}.png', {
+  //       maxZoom: 19,
+  //       attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+  //     });
+  //     tiles.addTo(map.current)
+  //     console.log(map.current)
+  //   }
+  //   asyncWrapper()
+  // }, [])
 
-  useEffect(() => {
-    if (!map.current) return;
-
-    // TODO: clear map
-
-    if (hubs) {
-      hubs.forEach((hub) => {
-        const config = getHubConfig(hub);
-        // TODO: save ID
-        map.current?.addLayer(config)
-      })
-    }
-
-  }, [hubs, cars])
+  // useEffect(() => {
+  //   if (!map.current) return;
+  //
+  //   // TODO: clear map
+  //
+  //   if (hubs) {
+  //     hubs.forEach((hub) => {
+  //       // console.log(hub)
+  //       const config = getHubConfig(hub);
+  //       // TODO: save ID
+  //       console.log(config)
+  //       map.current?.on('load', () => {
+  //         map.current?.addLayer(config)
+  //       })
+  //     })
+  //   }
+  //
+  // }, [hubs, cars])
 
   // if (m)
 
@@ -147,12 +161,25 @@ export const Map = ({ hubs, cars }: Props) => {
 // func();
 // }, []);
   return (
-      <div style={{display: "grid"}}>
-          <div id="map"></div>
-          <AppendHead>
-              <link href='https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css' rel='stylesheet' />
-              <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js" defer></script>
-          </AppendHead>
+      <div>
+        {/*<div id="map"></div>*/}
+
+        <MapContainer center={[51.505, -0.09]} zoom={13} scrollWheelZoom={false}>
+          <TileLayer
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+          />
+          <Marker position={[51.505, -0.09]}>
+            <Popup>
+              A pretty CSS3 popup. <br /> Easily customizable.
+            </Popup>
+          </Marker>
+        </MapContainer>
+          {/*<div id="map"></div>*/}
+          {/*<AppendHead>*/}
+          {/*    <link href='https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css' rel='stylesheet' />*/}
+          {/*    <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js" defer></script>*/}
+          {/*</AppendHead>*/}
       </div>
   )
 }

@@ -6,27 +6,25 @@ import {
 import { useQuery } from "react-query";
 import axios from "axios";
 
-import { Welcome } from "./features/welcome";
-import { FlowManager } from "./features/flowManager";
-
 import './App.css'
 import {Map} from "./features/map/Map";
+import {get_hubs} from "./features/api/api";
 
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <FlowManager />,
-  },
-  {
-    path: "/welcome",
-    element: <Welcome />,
-  },
-]);
+// const router = createBrowserRouter([
+//   {
+//     path: "/",
+//     element: <FlowManager />,
+//   },
+//   {
+//     path: "/welcome",
+//     element: <Welcome />,
+//   },
+// ]);
 
 function App() {
   const [modal, setModal] = useState(false);
 
-  const data = useQuery('hubs', () => axios('http://localhost:80/get_hubs/'))
+  const data = useQuery('hubs', get_hubs)
   console.log(data)
 
   useEffect(() => {
@@ -49,7 +47,7 @@ function App() {
           <button onClick={() => setMode('passenger')}>Passenger</button>
         </div>
       )}
-      <Map hubs={} />
+      <Map hubs={data.status === "success" ? data.data : []} />
       {/*<RouterProvider router={router} />*/}
     </div>
   )
