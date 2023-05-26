@@ -11,6 +11,8 @@ import {Map} from "./features/map/Map";
 import {TopBar} from "./features/topbar/TopBar";
 import {Rides} from "./pages/Rides";
 
+import {get_hubs} from "./features/api/api";
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -21,7 +23,7 @@ const router = createBrowserRouter([
 function App() {
   const [modal, setModal] = useState(false);
 
-  const data = useQuery('hubs', () => axios('http://localhost:80/get_hubs/'))
+  const data = useQuery('hubs', get_hubs)
   console.log(data)
 
   const setMode = (mode: 'driver' | 'passenger') => {
@@ -32,8 +34,9 @@ function App() {
   return (
     <div>
       <button className='hamburger' onClick={() => setModal(m => !m)}>[]</button>
-      <Rides />
-      <Map />
+      <TopBar select="source" destination_hub="Hubby hub" />
+      <Map hubs={data.status === "success" ? data.data : []} />
+      {/*<RouterProvider router={router} />*/}
     </div>
   )
 }

@@ -1,15 +1,24 @@
-import { useState, useEffect, useRef } from "react";
-import { v4 as uuid } from 'uuid'
-import AppendHead from 'react-append-head';
-import { LngLat, LngLatLike, Map as MapBox, AnyLayer } from 'mapbox-gl';
-import 'mapbox-gl/dist/mapbox-gl.css';
+import { useState, useEffect, PropsWithChildren } from "react";
+import * as L from "leaflet";
+import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
+// import { v4 as uuid } from 'uuid'
+import hubIcon$ from '../../assets/hub.svg'
 
+const hubIcon = L.icon({
+  iconUrl: hubIcon$,
+  iconSize: [20, 20],
+  iconAnchor: [10, 10],
+  // popupAnchor: [-3, -76],
+  // shadowUrl: 'my-icon-shadow.png',
+  // shadowSize: [68, 95],
+  // shadowAnchor: [22, 94]
+});
 
 const getLocation = (): Promise<Loc> => {
   return new Promise((resolve, reject) => {
     navigator.geolocation.getCurrentPosition(
       (position) => {
-          const loc = [position.coords.longitude, position.coords.latitude];
+          const loc: Loc = [position.coords.latitude, position.coords.longitude];
           resolve(loc);
         },
     (error) => {
@@ -30,129 +39,62 @@ type Props = {
   cars?: null[]
 }
 
-const getHubConfig = ({ loc }: Hub) => ({
-  id: uuid(),
-  type: 'circle',
-  source: {
-    type: 'geojson',
-    data: {
-      type: 'FeatureCollection',
-      features: [
-        {
-          type: 'Feature',
-          geometry: {
-            type: 'Point',
-            coordinates: [loc[0], loc[1]]
-          }
-        }
-      ]
-    }
-  },
-  paint: {
-    'circle-radius': 6, // Adjust the radius of the circle
-    'circle-color': '#FF0000' // Specify the color of the circle
-  }
-} as AnyLayer)
+export const Map = (props: Props) => {
+  return (
+    <MapContainer center={[0, 0]} zoom={13}>
+      <TileLayer
+        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+      />
+      <MapContent {...props} />
+    </MapContainer>
+  )
+}
 
-export const Map = ({ hubs, cars }: Props) => {
-  const map = useRef<MapBox | null>(null);
+const MapContent = ({ hubs }: Props) => {
+  const map = useMap();
+  const [currentLocation, setLocation] = useState<Loc>([0, 0])
 
   useEffect(() => {
     const asyncWrapper = async () => {
-      map.current = new MapBox({
-        container: 'map',
-        style: 'mapbox://styles/mapbox/streets-v12',
-        center: await getLocation(),
-        zoom: 11,
-        accessToken: 'pk.eyJ1IjoibHN0dW1hIiwiYSI6ImNsaTN0dnc3ZDBpMTkzZW1seml3NTZobDUifQ._Fo8j6VzHhLj-BDC5EW_xg'
-      })
-      console.log(map.current)
+      const location = await getLocation();
+      setLocation(location)
+      map.setView({ lat: location[0], lng: location[1]})
     }
     asyncWrapper()
   }, [])
-
   useEffect(() => {
-    if (!map.current) return;
+    console.log('center', map.getCenter())
+  }, [location])
 
-    // TODO: clear map
+  // useEffect(() => {
+  //   if (!map.current) return;
+  //
+  //   // TODO: clear map
+  //
+  //   if (hubs) {
+  //     hubs.forEach((hub) => {
+  //       // console.log(hub)
+  //       const config = getHubConfig(hub);
+  //       // TODO: save ID
+  //       console.log(config)
+  //       map.current?.on('load', () => {
+  //         map.current?.addLayer(config)
+  //       })
+  //     })
+  //   }
+  //
+  // }, [hubs, cars])
 
-    if (hubs) {
-      hubs.forEach((hub) => {
-        const config = getHubConfig(hub);
-        // TODO: save ID
-        map.current?.addLayer(config)
-      })
-    }
+  console.log(map)
 
-  }, [hubs, cars])
-
-  // if (m)
-
-
-//   useEffect(() => {
-//     const func = async () => {
-{/*    const loc = await get_location();*/}
-
-{/*    // Render map*/}
-
-{/*    map.on("load", () => {*/}
-{/*      map.addLayer({*/}
-{/*        id: 'a',*/}
-{/*        type: ''*/}
-//       })
-//       map.loadImage(
-{/*          "https://docs.mapbox.com/mapbox-gl-js/assets/cat.png",*/}
-{/*          (error, image)  => {*/}
-{/*              if (error) throw error;*/}
-{/*              map.addImage('circle', image);*/}
-{/*          }*/}
-{/*      )*/}
-
-{/*        fetch("http://localhost:80/get_hubs/").then((r)=>{r.json().then((j)=>{*/}
-{/*            j = JSON.parse(j)*/}
-{/*            for (let i = 0; i < j.length; i++) {*/}
-{/*                const element = j[i]*/}
-//                 console.warn(element)
-//                 map.addSource(element["pk"], {
-{/*                    'type': 'geojson',*/}
-{/*                    'data': {*/}
-{/*                        'type': 'FeatureCollection',*/}
-{/*                        'features': [*/}
-{/*                            {*/}
-{/*                                'type': 'Feature',*/}
-{/*                                'geometry': {*/}
-{/*                                    'type': 'Point',*/}
-{/*                                    'coordinates': [element["fields"]["longitude"], element["fields"]["latitude"]],*/}
-//                                 }
-{/*                            }*/}
-{/*                        ]*/}
-{/*                    }*/}
-//                 });
-//
-//                 // Add a layer to use the image to represent the data.
-//                 map.addLayer({
-//                     'id': element["pk"],
-//                     'type': 'symbol',
-//                     'source': element["pk"], // reference the data source
-//                     'layout': {
-{/*                        'icon-image': 'circle', // reference the image*/}
-//                         'icon-size': 0.2
-//                     }
-//                 });
-//             }
-//         })})
-// })
-// };
-//
-// func();
-// }, []);
   return (
-      <div style={{display: "grid"}}>
-          <div id="map"></div>
-          <AppendHead>
-              <link href='https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css' rel='stylesheet' />
-              <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js" defer></script>
-          </AppendHead>
-      </div>
+    <div>
+      {hubs?.map(({ loc }) => (
+        <Marker key={loc} position={new L.LatLng(loc[0], loc[1])} icon={hubIcon}>
+
+        </Marker>
+      ))}
+    </div>
   )
 }
