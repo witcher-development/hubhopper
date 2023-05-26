@@ -6,21 +6,16 @@ import {
 import { useQuery } from "react-query";
 import axios from "axios";
 
-import { Welcome } from "./features/welcome";
-import { FlowManager } from "./features/flowManager";
-
 import './App.css'
 import {Map} from "./features/map/Map";
+import {TopBar} from "./features/topbar/TopBar";
+import {Rides} from "./pages/Rides";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <FlowManager />,
-  },
-  {
-    path: "/welcome",
-    element: <Welcome />,
-  },
+    element: <Rides />
+  }
 ]);
 
 function App() {
@@ -28,12 +23,6 @@ function App() {
 
   const data = useQuery('hubs', () => axios('http://localhost:80/get_hubs/'))
   console.log(data)
-
-  useEffect(() => {
-    if (!localStorage.getItem('mode')) {
-      router.navigate('/welcome')
-    }
-  }, [])
 
   const setMode = (mode: 'driver' | 'passenger') => {
     localStorage.setItem('mode', mode)
@@ -43,14 +32,8 @@ function App() {
   return (
     <div>
       <button className='hamburger' onClick={() => setModal(m => !m)}>[]</button>
-      {modal && (
-        <div className='modal'>
-          <button onClick={() => setMode('driver')}>Driver</button>
-          <button onClick={() => setMode('passenger')}>Passenger</button>
-        </div>
-      )}
-      <Map hubs={} />
-      {/*<RouterProvider router={router} />*/}
+      <TopBar select="source" destination_hub="Hubby hub" />
+      <Map />
     </div>
   )
 }
